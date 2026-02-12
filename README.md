@@ -1,25 +1,44 @@
-# 🏙️ AuraRent — Premium Smart Rental SaaS Platform
+# AuraRent - Premium Smart Rental SaaS Platform
 
-**AuraRent** is a sophisticated, end-to-end property management and rental marketplace designed for the modern housing economy. Built with a focus on high performance, secure transactions, and real-time user engagement, this platform demonstrates a senior-level full-stack architecture suitable for both commercial SaaS deployment and enterprise-grade portfolios.
-
----
-
-## 🚀 Key Features
-
-- **🛡️ Multi-Role Ecosystem**: Dedicated, secure experience for Tenants, Landlords, and Administrators.
-- **💬 Real-Time Messaging**: Instant chat infrastructure powered by **Pusher**, featuring persistent history and typing indicators.
-- **💳 Secure Financial Layer**: 100% compliant payment processing via **Stripe**, including invoices and transaction history.
-- **🔍 Advanced Discovery**: high-performance property search with dynamic filtering, maps, and geolocation.
-- **📊 Intelligence Dashboards**: Role-specific analytics (ROI for Landlords, Rental history for Tenants, Global moderation for Admins).
-- **🌟 Trust & Reviews**: A weighted verification system for users and properties to ensure community safety.
+AuraRent is a sophisticated, end-to-end property management and rental marketplace designed for the modern housing economy. Built with a focus on high performance, secure transactions, and real-time user engagement, this platform demonstrates a senior-level full-stack architecture suitable for both commercial SaaS deployment and enterprise-grade portfolios.
 
 ---
 
-## 🛠️ Technical Stack
+## Architecture Overview
 
-- **Framework**: [Next.js 15+](https://nextjs.org/) (App Router, Server Actions, Turbopack)
+```mermaid
+graph TD
+    Client[Next.js Client Components] --> AppRouter[Next.js App Router]
+    AppRouter --> ServerActions[Server Actions / API Routes]
+    ServerActions --> ServiceLayer[Service Layer / Business Logic]
+    ServiceLayer --> Prisma[Prisma ORM]
+    Prisma --> DB[(PostgreSQL)]
+    
+    ServiceLayer --> Stripe[Stripe Payments]
+    ServiceLayer --> Pusher[Pusher WebSockets]
+    ServiceLayer --> Cloudinary[Cloudinary Storage]
+    
+    AppRouter --> Auth[NextAuth.js]
+```
+
+---
+
+## Key Features
+
+- **Multi-Role Ecosystem**: Dedicated, secure experience for Tenants, Landlords, and Administrators.
+- **Real-Time Messaging**: Instant chat infrastructure powered by Pusher, featuring persistent history and typing indicators.
+- **Secure Financial Layer**: 100% compliant payment processing via Stripe, including invoices and transaction history.
+- **Advanced Discovery**: High-performance property search with dynamic filtering, maps, and geolocation.
+- **Intelligence Dashboards**: Role-specific analytics (ROI for Landlords, Rental history for Tenants, Global moderation for Admins).
+- **Trust & Reviews**: A weighted verification system for users and properties to ensure community safety.
+
+---
+
+## Technical Stack
+
+- **Framework**: Next.js 15+ (App Router, Server Actions, Turbopack)
 - **Language**: TypeScript (Strict Mode)
-- **Database**: PostgreSQL with [Prisma ORM](https://www.prisma.io/)
+- **Database**: PostgreSQL with Prisma ORM
 - **Styling**: Tailwind CSS & Vanilla CSS (Glassmorphism UI)
 - **Animations**: Framer Motion
 - **Authentication**: NextAuth.js (JWT Strategy)
@@ -27,16 +46,16 @@
 
 ---
 
-## 🏗️ Architectural Highlights
+## Architectural Highlights
 
-- **Service-Oriented Logic**: Business logic is encapsulated in a dedicated `services/` layer to ensure maintainability and testability.
-- **Stateless Authentication**: utilized JWT-based sessions for scalable, serverless-ready user management.
+- **Service-Oriented Logic**: Business logic is encapsulated in a dedicated service layer to ensure maintainability and testability.
+- **Stateless Authentication**: Utilizes JWT-based sessions for scalable, serverless-ready user management.
 - **Optimized Performance**: Leverages Next.js static generation (SSG) for fast initial loads and dynamic rendering (SSR) for real-time data.
 - **Schema-Driven Design**: Robust Prisma schema managing complex relationships between Users, Properties, Bookings, and Conversations.
 
 ---
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -48,7 +67,7 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/aurarent.git
+   git clone https://github.com/ThebeLedwaba/-AuraRent.git
    cd aurarent
    ```
 
@@ -58,7 +77,7 @@
    ```
 
 3. **Environment Setup**
-   Create a `.env` file based on the provided template:
+   Create a .env file based on the provided template:
    ```env
    DATABASE_URL="your-postgresql-url"
    NEXTAUTH_SECRET="your-secret"
@@ -78,7 +97,7 @@
 
 ---
 
-## 👨‍💻 Portfolio Impact
+## Portfolio Impact
 
 This project showcases the ability to:
 - Handle complex business logic and state management.
@@ -88,4 +107,4 @@ This project showcases the ability to:
 
 ---
 
-*Built with ❤️ for the future of urban living.*
+*Built with precision for the future of urban living.*
