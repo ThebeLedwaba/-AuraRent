@@ -1,6 +1,6 @@
 # AuraRent - Premium Smart Rental SaaS Platform
 
-AuraRent is a sophisticated, end-to-end property management and rental marketplace designed for the modern housing economy. Built with a focus on high performance, secure transactions, and real-time user engagement, this platform demonstrates a senior-level full-stack architecture suitable for both commercial SaaS deployment and enterprise-grade portfolios.
+AuraRent is a sophisticated, end-to-end property management and rental marketplace designed for the modern housing economy. Built with a focus on high performance, secure transactions, and real-time user engagement, this platform demonstrates a high-level full-stack architecture suitable for both commercial SaaS deployment and enterprise-grade portfolios.
 
 ---
 
