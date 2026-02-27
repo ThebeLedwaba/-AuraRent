@@ -31,7 +31,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                         {property.type}
                     </div>
                     <div className="absolute bottom-4 left-4 text-white font-bold text-xl drop-shadow-md">
-                        ${property.price.toLocaleString()}<span className="text-sm font-normal">/mo</span>
+                        R{property.price.toLocaleString()}<span className="text-sm font-normal">/mo</span>
                     </div>
                 </div>
 

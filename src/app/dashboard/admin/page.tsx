@@ -30,17 +30,27 @@ export default function AdminDashboard() {
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-                <StatCard icon={<Users className="text-blue-400" />} label="Platform Users" value={stats?.usersCount || 0} loading={loading} />
-                <StatCard icon={<Building className="text-primary" />} label="Total Listings" value={stats?.propertiesCount || 0} loading={loading} />
-                <StatCard icon={<Activity className="text-emerald-400" />} label="Gross Volume" value={`$${stats?.totalRevenue?.toLocaleString() || 0}`} loading={loading} />
-                <StatCard icon={<ShieldAlert className="text-rose-400" />} label="Pending Verifications" value={0} loading={loading} />
+                <StatCard icon={<Users className="text-blue-400" />} label="Total Users" value={stats?.usersCount || 0} loading={loading} />
+                <StatCard icon={<Building className="text-primary" />} label="Total Properties" value={stats?.propertiesCount || 0} loading={loading} />
+                <StatCard icon={<ShieldCheck className="text-emerald-400" />} label="Total Bookings" value={stats?.bookingsCount || 0} loading={loading} />
+                <StatCard icon={<Activity className="text-indigo-400" />} label="Total Revenue" value={`R${stats?.totalRevenue?.toLocaleString() || 0} `} loading={loading} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="glass-morphism rounded-3xl p-8 border border-border/40">
                     <h2 className="text-xl font-bold mb-6">User Moderation</h2>
                     <div className="space-y-4">
-                        <p className="text-slate-500 text-sm">System moderation actions and user verification requests will be listed here.</p>
+                        <div className="space-y-4">
+                            <p className="text-slate-500 text-sm mb-4">Manage the platform's user base and property listings.</p>
+                            <div className="flex gap-4">
+                                <a href="/dashboard/admin/users" className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
+                                    <Users size={18} /> Manage Users
+                                </a>
+                                <a href="/dashboard/admin/properties" className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors">
+                                    <Building size={18} /> Manage Properties
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

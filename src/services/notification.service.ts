@@ -1,31 +1,57 @@
-import { pusherServer } from "@/lib/pusher";
+import prisma from "@/lib/prisma";
+import { NotificationType } from "@prisma/client";
 
 export const NotificationService = {
-    async sendInternalNotification(userId: string, title: string, message: string) {
-        // In a full implementation, we would save this to a Notification model in Prisma
-        console.log(`[Notification] to ${userId}: ${title} - ${message}`);
+    async createNotification(data: {
+        userId: string;
+        type: NotificationType;
+        message: string;
+        link?: string;
+    }) {
+        // 1. Create In-App Notification
+        const notification = await prisma.notification.create({
+            data: {
+                userId: data.userId,
+                type: data.type,
+                message: data.message,
+                link: data.link,
+            },
+        });
 
-        // Also trigger a real-time notification via Pusher
-        await pusherServer.trigger(`user-${userId}`, "notification", {
-            title,
-            message,
-            createdAt: new Date(),
+        // 2. "Send" Email (Mock)
+        // In a real app, we would use Resend or SendGrid here.
+        // await sendEmail(user.email, subject, body);
+        console.log(`[EMAIL MOCK] To User ${data.userId}: ${data.message}`);
+
+        return notification;
+    },
+
+    async getUserNotifications(userId: string) {
+        return prisma.notification.findMany({
+            where: { userId },
+            orderBy: { createdAt: "desc" },
         });
     },
 
-    async sendEmailNotification(email: string, subject: string, content: string) {
-        if (!process.env.SENDGRID_API_KEY) {
-            console.log("Email notification (SendGrid key missing):", { email, subject });
-            return;
-        }
-        // Implement SendGrid logic here
+    async markAsRead(notificationId: string) {
+        return prisma.notification.update({
+            where: { id: notificationId },
+            data: { isRead: true },
+        });
     },
 
-    async sendSMSNotification(phone: string, message: string) {
-        if (!process.env.TWILIO_ACCOUNT_SID) {
-            console.log("SMS notification (Twilio credentials missing):", { phone, message });
-            return;
-        }
-        // Implement Twilio logic here
+    async markAllAsRead(userId: string) {
+        return prisma.notification.updateMany({
+            where: { userId, isRead: false },
+            data: { isRead: true },
+        });
     },
+
+    // Mock Email Sender
+    async sendEmail(to: string, subject: string, html: string) {
+        console.log("---------------------------------------------------");
+        console.log(`📨 SENDING EMAIL TO: ${to}`);
+        console.log(`Subject: ${subject}`);
+        console.log("---------------------------------------------------");
+    }
 };

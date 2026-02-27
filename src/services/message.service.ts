@@ -1,81 +1,102 @@
 import prisma from "@/lib/prisma";
-import { pusherServer } from "@/lib/pusher";
 
 export const MessageService = {
-    async createConversation(participantIds: string[], propertyId?: string) {
+    async startConversation(senderId: string, receiverId: string, propertyId?: string) {
+        // Check if conversation already exists between these two users for this property
+        const existing = await prisma.conversation.findFirst({
+            where: {
+                AND: [
+                    { participants: { some: { id: senderId } } },
+                    { participants: { some: { id: receiverId } } },
+                    { propertyId: propertyId || undefined }
+                ]
+            },
+            include: {
+                participants: {
+                    select: { id: true, name: true, image: true }
+                }
+            }
+        });
+
+        if (existing) return existing;
+
         return prisma.conversation.create({
             data: {
                 participants: {
-                    connect: participantIds.map(id => ({ id })),
+                    connect: [{ id: senderId }, { id: receiverId }]
                 },
-                propertyId,
-            },
-            include: {
-                participants: true,
-            },
-        });
-    },
-
-    async getConversations(userId: string) {
-        return prisma.conversation.findMany({
-            where: {
-                participants: {
-                    some: { id: userId },
-                },
+                propertyId
             },
             include: {
                 participants: {
-                    select: {
-                        id: true,
-                        name: true,
-                        image: true,
-                    },
-                },
-                messages: {
-                    take: 1,
-                    orderBy: { createdAt: "desc" },
-                },
-            },
+                    select: { id: true, name: true, image: true }
+                }
+            }
         });
     },
 
     async sendMessage(conversationId: string, senderId: string, text: string) {
-        const message = await prisma.message.create({
+        return prisma.message.create({
             data: {
-                text,
                 conversationId,
                 senderId,
+                text
             },
             include: {
                 sender: {
-                    select: {
-                        id: true,
-                        name: true,
-                        image: true,
-                    },
-                },
-            },
+                    select: { id: true, name: true, image: true }
+                }
+            }
         });
-
-        // Trigger Pusher event for real-time delivery
-        await pusherServer.trigger(conversationId, "new-message", message);
-
-        return message;
     },
 
-    async getMessages(conversationId: string) {
+    async getUserConversations(userId: string) {
+        return prisma.conversation.findMany({
+            where: {
+                participants: {
+                    some: { id: userId }
+                }
+            },
+            include: {
+                participants: {
+                    select: { id: true, name: true, image: true }
+                },
+                messages: {
+                    orderBy: { createdAt: 'desc' },
+                    take: 1
+                }
+            },
+            orderBy: { updatedAt: 'desc' }
+        });
+    },
+
+    async getConversationMessages(conversationId: string) {
         return prisma.message.findMany({
             where: { conversationId },
-            orderBy: { createdAt: "asc" },
             include: {
                 sender: {
-                    select: {
-                        id: true,
-                        name: true,
-                        image: true,
-                    },
-                },
+                    select: { id: true, name: true, image: true }
+                }
             },
+            orderBy: { createdAt: 'asc' }
         });
     },
+
+    async getConversation(conversationId: string, userId: string) {
+        const conversation = await prisma.conversation.findUnique({
+            where: { id: conversationId },
+            include: {
+                participants: {
+                    select: { id: true, name: true, image: true }
+                }
+            }
+        });
+
+        // Verify participation
+        if (!conversation || !conversation.participants.some(p => p.id === userId)) {
+            return null;
+        }
+
+        return conversation;
+    }
 };

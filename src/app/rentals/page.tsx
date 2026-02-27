@@ -96,7 +96,7 @@ export default function RentalsPage() {
                                     <span className={`px-4 py-1.5 rounded-full text-xs font-bold border border-current/20 ${getStatusColor(booking.status)}`}>
                                         {booking.status}
                                     </span>
-                                    <span className="text-2xl font-bold text-white">${booking.totalPrice.toLocaleString()}</span>
+                                    <span className="text-2xl font-bold text-white">R{booking.totalPrice.toLocaleString()}</span>
                                 </div>
                             </div>
 

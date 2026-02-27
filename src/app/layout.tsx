@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NextAuthProvider } from "@/components/providers/NextAuthProvider";
-import Header from "@/components/layout/Header";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,16 +18,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className={inter.className}>
         <NextAuthProvider>
-          <Header />
-          <main className="pt-16 min-h-screen">
-            {children}
-          </main>
-          <footer className="py-8 border-t border-border/40 text-center text-sm text-slate-400">
-            <p>&copy; {new Date().getFullYear()} SmartRental System. All rights reserved.</p>
-          </footer>
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1 pt-16">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </NextAuthProvider>
       </body>
     </html>

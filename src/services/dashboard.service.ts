@@ -50,9 +50,10 @@ export const DashboardService = {
     },
 
     async getAdminStats() {
-        const [usersCount, propertiesCount, totalRevenue] = await Promise.all([
+        const [usersCount, propertiesCount, bookingsCount, totalRevenue] = await Promise.all([
             prisma.user.count(),
             prisma.property.count(),
+            prisma.booking.count(),
             prisma.booking.aggregate({
                 where: { status: BookingStatus.PAID },
                 _sum: { totalPrice: true }
@@ -62,6 +63,7 @@ export const DashboardService = {
         return {
             usersCount,
             propertiesCount,
+            bookingsCount,
             totalRevenue: totalRevenue._sum.totalPrice || 0
         };
     }

@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { LayoutDashboard, Home, MessageSquare, CreditCard, Star } from "lucide-react";
 import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { MaintenanceList } from "@/components/dashboard/MaintenanceList";
+import { RentPassport } from "@/components/dashboard/RentPassport";
 
 export default function TenantDashboard() {
     const { data: session } = useSession();
@@ -12,12 +16,18 @@ export default function TenantDashboard() {
 
     useEffect(() => {
         const fetchStats = async () => {
+            // Mock data if API fails or for demo
             try {
                 const res = await fetch("/api/dashboard/stats");
-                const data = await res.json();
-                setStats(data);
+                if (res.ok) {
+                    const data = await res.json();
+                    setStats(data);
+                } else {
+                    setStats({ bookingsCount: 0, totalSpent: 0, recentMessages: [] });
+                }
             } catch (error) {
                 console.error("Failed to fetch dashboard stats:", error);
+                setStats({ bookingsCount: 0, totalSpent: 0, recentMessages: [] });
             } finally {
                 setLoading(false);
             }
@@ -26,43 +36,58 @@ export default function TenantDashboard() {
     }, []);
 
     return (
-        <div className="container mx-auto px-6 py-12">
-            <header className="mb-12">
-                <h1 className="text-4xl font-bold mb-2">Welcome back, <span className="gradient-text">{session?.user?.name}</span></h1>
-                <p className="text-slate-400">Manage your rentals, messages, and saved properties.</p>
+        <div className="container mx-auto px-4 py-8">
+            <header className="mb-8">
+                <h1 className="text-3xl font-bold tracking-tight">Welcome back, {session?.user?.name}</h1>
+                <p className="text-muted-foreground">Manage your rentals, messages, and saved properties.</p>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <StatCard icon={<Home className="text-primary" />} label="Active Rentals" value={stats?.bookingsCount || 0} loading={loading} />
-                <StatCard icon={<CreditCard className="text-emerald-400" />} label="Total Investment" value={`$${stats?.totalSpent?.toLocaleString() || 0}`} loading={loading} />
-                <StatCard icon={<MessageSquare className="text-blue-400" />} label="New Messages" value={stats?.recentMessages?.length || 0} loading={loading} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <StatCard icon={<Home className="h-4 w-4 text-muted-foreground" />} label="Active Rentals" value={stats?.bookingsCount || 0} loading={loading} />
+                <StatCard icon={<CreditCard className="h-4 w-4 text-muted-foreground" />} label="Total Investment" value={`R${stats?.totalSpent?.toLocaleString() || 0}`} loading={loading} />
+                <StatCard icon={<MessageSquare className="h-4 w-4 text-muted-foreground" />} label="New Messages" value={stats?.recentMessages?.length || 0} loading={loading} />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="glass-morphism rounded-3xl p-8 border border-border/40">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-bold">Recent Activity</h2>
-                        <Link href="/rentals" className="text-primary text-sm font-bold hover:underline">View All</Link>
-                    </div>
-                    {loading ? (
-                        <div className="space-y-4">
-                            {[1, 2, 3].map(n => <div key={n} className="h-16 bg-white/5 rounded-2xl animate-pulse" />)}
-                        </div>
-                    ) : (
-                        <div className="text-center py-12 text-slate-500">
-                            No recent activity recorded.
-                        </div>
-                    )}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-8">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-base font-semibold">Recent Activity</CardTitle>
+                            <Link href="/rentals">
+                                <Button variant="link" size="sm">View All</Button>
+                            </Link>
+                        </CardHeader>
+                        <CardContent>
+                            {loading ? (
+                                <div className="space-y-4">
+                                    {[1, 2, 3].map(n => <div key={n} className="h-12 bg-muted rounded-md animate-pulse" />)}
+                                </div>
+                            ) : (
+                                <div className="text-center py-12 text-muted-foreground text-sm">
+                                    No recent activity recorded.
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    <MaintenanceList />
                 </div>
 
-                <div className="glass-morphism rounded-3xl p-8 border border-border/40">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-bold">Recommended for You</h2>
-                        <Link href="/listings" className="text-primary text-sm font-bold hover:underline">Explore</Link>
-                    </div>
-                    <div className="text-center py-12 text-slate-500">
-                        Based on your search patterns, we'll suggest properties here.
-                    </div>
+                <div className="space-y-8">
+                    <RentPassport />
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-base font-semibold">Recommended for You</CardTitle>
+                            <Link href="/properties">
+                                <Button variant="link" size="sm">Explore</Button>
+                            </Link>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-center py-12 text-muted-foreground text-sm">
+                                Based on your search patterns, we'll suggest properties here.
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </div>
@@ -71,16 +96,20 @@ export default function TenantDashboard() {
 
 function StatCard({ icon, label, value, loading }: any) {
     return (
-        <div className="glass-morphism p-8 rounded-3xl border border-border/40 hover:border-primary/30 transition-all shadow-xl">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                    {label}
+                </CardTitle>
                 {icon}
-            </div>
-            <p className="text-slate-400 text-sm mb-1">{label}</p>
-            {loading ? (
-                <div className="h-8 w-24 bg-white/5 animate-pulse rounded-lg" />
-            ) : (
-                <p className="text-3xl font-bold">{value}</p>
-            )}
-        </div>
+            </CardHeader>
+            <CardContent>
+                {loading ? (
+                    <div className="h-8 w-24 bg-muted animate-pulse rounded-md" />
+                ) : (
+                    <div className="text-2xl font-bold">{value}</div>
+                )}
+            </CardContent>
+        </Card>
     );
 }

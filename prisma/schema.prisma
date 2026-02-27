@@ -33,6 +33,14 @@ model User {
   messages      Message[]
   reviewsWritten Review[] @relation("Reviewer")
   reviewsReceived Review[] @relation("LandlordReview")
+  notifications Notification[]
+  maintenanceTickets MaintenanceTicket[] @relation("TenantTickets")
+
+  // Passport & Verification
+  identityVerified Boolean   @default(false)
+  employmentVerified Boolean  @default(false)
+  rentPassportScore Int       @default(0)
+  transitionPreferences Json?  // e.g. { "movingAssistance": true, "petFriendly": false }
 }
 
 model Review {
@@ -125,8 +133,9 @@ model Property {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
-  bookings    Booking[]
-  reviews     Review[]
+  bookings            Booking[]
+  reviews             Review[]
+  maintenanceTickets  MaintenanceTicket[]
 }
 
 enum BookingStatus {
@@ -150,4 +159,57 @@ model Booking {
   paymentIntentId String?       @unique
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+}
+
+enum NotificationType {
+  BOOKING_REQUEST
+  BOOKING_CONFIRMED
+  BOOKING_CANCELLED
+  NEW_MESSAGE
+  NEW_REVIEW
+  SYSTEM
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  message   String
+  isRead    Boolean          @default(false)
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  link      String?          // URL to redirect to
+  createdAt DateTime         @default(now())
+}
+
+enum MaintenanceStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CANCELLED
+}
+
+enum MaintenancePriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model MaintenanceTicket {
+  id          String             @id @default(cuid())
+  title       String
+  description String
+  status      MaintenanceStatus  @default(OPEN)
+  priority    MaintenancePriority @default(MEDIUM)
+  category    String             // e.g. "PLUMBING", "ELECTRICAL"
+  images      String[]           @default([])
+  
+  tenantId    String
+  tenant      User               @relation("TenantTickets", fields: [tenantId], references: [id])
+  
+  propertyId  String
+  property    Property           @relation(fields: [propertyId], references: [id])
+  
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
 }

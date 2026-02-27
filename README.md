@@ -21,16 +21,16 @@ graph TD
     AppRouter --> Auth[NextAuth.js]
 ```
 
----
-
 ## Key Features
 
 - **Multi-Role Ecosystem**: Dedicated, secure experience for Tenants, Landlords, and Administrators.
+- **Digital Rent Passport**: Verified tenant profiles featuring the AuraScore, identity verification, and portability.
+- **Neighborhood Intelligence**: Hyper-local data integration including Walk Scores, transit amenities, and commute estimates.
+- **Smart Maintenance Portal**: End-to-end repair tracking with specialized dashboards for both tenants and landlords.
+- **AI Price Transparency**: Market-driven analytics providing real-time rent benchmarking and competitiveness scores.
 - **Real-Time Messaging**: Instant chat infrastructure powered by Pusher, featuring persistent history and typing indicators.
-- **Secure Financial Layer**: 100% compliant payment processing via Stripe, including invoices and transaction history.
-- **Advanced Discovery**: High-performance property search with dynamic filtering, maps, and geolocation.
-- **Intelligence Dashboards**: Role-specific analytics (ROI for Landlords, Rental history for Tenants, Global moderation for Admins).
-- **Trust & Reviews**: A weighted verification system for users and properties to ensure community safety.
+- **Secure Financial Layer**: PCI-compliant payment processing via Stripe, including automated invoicing and South African Rand (ZAR) support.
+- **Advanced Discovery**: High-performance property search with dynamic filtering and geolocation.
 
 ---
 

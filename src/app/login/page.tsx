@@ -39,10 +39,10 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-6 py-12">
+        <div className="min-h-screen flex items-center justify-center px-6 py-12 gradient-bg">
             <div className="w-full max-w-md">
                 <div className="glass-morphism rounded-3xl p-8 border border-border/40 shadow-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                    <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
                         <LogIn className="w-32 h-32 text-primary" />
                     </div>
 
@@ -59,10 +59,11 @@ export default function LoginPage() {
                         )}
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300 ml-1">Email Address</label>
+                            <label htmlFor="email" className="text-sm font-medium text-slate-300 ml-1 cursor-pointer">Email Address</label>
                             <div className="relative group">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors pointer-events-none" />
                                 <input
+                                    id="email"
                                     type="email"
                                     required
                                     value={email}
@@ -74,10 +75,11 @@ export default function LoginPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300 ml-1">Password</label>
+                            <label htmlFor="password" className="text-sm font-medium text-slate-300 ml-1 cursor-pointer">Password</label>
                             <div className="relative group">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-primary transition-colors pointer-events-none" />
                                 <input
+                                    id="password"
                                     type="password"
                                     required
                                     value={password}
